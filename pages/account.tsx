@@ -7,6 +7,7 @@ const account = () => {
         return (
             <div>
                 <h1>Welcome, {session.user.name}</h1>
+                <img src={session.user.image} alt="User Image" className='rounded-full'/>
                 <button onClick={()=>signOut()}>Sign Out</button>
             </div>
         );
@@ -31,6 +32,7 @@ export const getServerSideProps = async (context) => {
             },
         };
     }
+    
     return {
         props: { session },
     };
