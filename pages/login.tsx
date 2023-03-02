@@ -7,10 +7,9 @@ const login = () => {
     if (session) {
         return (
             <div>
-                <h1>Welcome, {session.user.email}</h1>
-                <img src={session.user.image} alt="User Image" className='rounded-full'/>
+                <h className="mt-7">Welcome, {session.user.email}</h1>
+                <img src={session.user.image} alt="User Image" className='rounded-full w-12 h-12 mt-7'/>
                 <p>What can we do for you today?</p>
-                <button onClick={() => signOut()}>Sign Out</button>
             </div>
         );
     } else {

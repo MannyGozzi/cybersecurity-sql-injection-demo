@@ -12,7 +12,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
     Helvetica Neue, sans-serif;
-    padding: 0 2rem;
+    padding: 0 0;
 }
 
 a {
@@ -37,7 +37,7 @@ input, textarea {
   margin: 0.5rem 0;
 }
 
-button {
+button, .button {
   background-color: #000000;
   border-radius: .5rem;
   border: none;
