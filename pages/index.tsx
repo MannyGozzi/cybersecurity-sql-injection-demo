@@ -5,8 +5,7 @@ import Link from "next/link"
 export default function Component() {
   const { data: session } = useSession()
   if(session) {
-    return <>
-      <div className='flex justify-center flex-col text-center items-center'>
+    return <div className='flex justify-center flex-col text-center items-center'>
         <h1 className="mt-7">Welcome</h1>
         <p>What can we do for you?</p>
         <button className='mt-3'>
@@ -16,7 +15,6 @@ export default function Component() {
           <Link href="/secret">Secret</Link>
         </button>
       </div>
-    </> 
   }
   return <div className='justify-center flex-col text-center'>
     <h1 className="mt-7">Welcome</h1>
