@@ -7,7 +7,7 @@ const login = () => {
     if (session) {
         return (
             <div>
-                <h className="mt-7">Welcome, {session.user.email}</h1>
+                <h1 className="mt-7">Welcome, {session.user.email}</h1>
                 <img src={session.user.image} alt="User Image" className='rounded-full w-12 h-12 mt-7'/>
                 <p>What can we do for you today?</p>
             </div>
