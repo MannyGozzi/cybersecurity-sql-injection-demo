@@ -7,10 +7,10 @@ export default function Secret() {
 
     useEffect(()=>{
         const fetchData = async () => {
-            const res = await fetch('/api/secret');
+            const res = await fetch('http://localhost:3000/api/getdata');
             const json = await res.json();
-            if(json && json.content && json.content !== ""){
-                setContent(json.content);
+            if(json && json.products){
+                setContent(json.products);
             }
         }
         fetchData();
@@ -23,13 +23,21 @@ export default function Secret() {
             <main>
                 <h1>Please sign in</h1>
             </main>
-        )
+        );
     } else if (status === "authenticated") {
-        return (
-        <main>
-            <h1>Secret Page</h1>
-            <p>{content}</p>
-        </main>
+        return ( 
+            <main className='items-center'>
+                <h1>Secret Data</h1>
+                <div className='w-1/3'>
+                {content && content.map((user, index) => {
+                    return <div className='p-5 mt-5 border-slate-300 border-2 rounded-lg'>
+                        <h3>{user.name}</h3>
+                        <h5>email: {user.email}</h5>
+                        <p>secret: {user.secret}</p>
+                    </div>
+                })}
+                </div>
+            </main>
         );
     }
 }

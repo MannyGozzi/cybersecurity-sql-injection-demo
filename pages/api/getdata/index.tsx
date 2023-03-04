@@ -14,7 +14,7 @@ export default async function handler(req, res) {
         const values = [];
         const [data] = await connection.execute(query, values);
         connection.end();
-        res.status(200).json({results: data});
+        res.status(200).json({products: data});
     } catch(err) {
         console.log(err);
     }
