@@ -1,19 +1,54 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {useSession} from 'next-auth/react'
 
 export default function Secret() {
     const { data: session, status } = useSession()
     const[content, setContent] = useState();
+    const[created, setCreated] = useState(false);
+    const secretRef = useRef();
+
+    async function getProducts () {
+        const postData = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata`, postData);
+        const json = await res.json();
+        if(json && json.products){
+            setContent(json.products);
+        }
+    }
+
+    async function addProduct () {
+        const secret = secretRef.current.value.trim();
+        if (secret.length < 3 && status !== "authenticated") return;
+        const postData = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: session.user.email,
+                name: session.user.name,
+                secret: secret
+            }),
+        };
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata`, postData);
+        console.log(res);
+        const json = await res.json();
+        if (json.message !== "success") return;
+        const newProduct = json.products;
+        setContent([
+            ...content, 
+            {itemid: newProduct.itemid, name: newProduct.name, email: newProduct.email, secret: newProduct.secret},
+        ]);
+        setCreated(true);
+    }
 
     useEffect(()=>{
-        const fetchData = async () => {
-            const res = await fetch('http://localhost:3000/api/getdata');
-            const json = await res.json();
-            if(json && json.products){
-                setContent(json.products);
-            }
-        }
-        fetchData();
+        getProducts();
     }, [session]);
 
     if (typeof window !== 'undefined' && status==='loading') { 
@@ -40,8 +75,9 @@ export default function Secret() {
                     
                     </div>     
                     <form className='mt-3 w-70 flex flex-col items-start justify-start'>
-                        <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3' type="text" name="secret" placeholder="New secret..."/>
-                        <button type="submit">Submit</button>
+                        <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3' ref={secretRef} type="text" name="secret" placeholder="New secret..."/>
+                        <button type="button" onClick={() => {addProduct();}}>Add</button>
+                        {created ? <div className='text-green-600'>Success!</div> : null}
                     </form>    
                 </div>           
             </main>

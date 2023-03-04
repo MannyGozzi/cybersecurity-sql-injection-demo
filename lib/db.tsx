@@ -15,6 +15,7 @@ export async function query({query, values = []}) {
         return results;
     } catch(err) {
         throw Error(err.message);
+        console.log(err.message);
         return {err};
     }
 }
