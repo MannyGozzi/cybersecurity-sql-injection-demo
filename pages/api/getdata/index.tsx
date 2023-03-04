@@ -7,10 +7,11 @@ export default async function handler(req, res) {
         try {
             const querySql = "SELECT * FROM Users";
             const valuesParams = [];
+            // console.log(valuesParams);
             const data = await query({query: querySql, values: valuesParams});
             res.status(200).json({products: data});
         } catch(err) {
-            // console.log(err);
+            console.debug(err);
             res.status(500).json({error: err.message});
         }
     } else if (req.method === "POST") {
@@ -36,6 +37,34 @@ export default async function handler(req, res) {
             // console.debug(err);
             res.status(500).json({error: err.message});
         }
+    } else if (req.method === "DELETE") {
+        try {
+            const deleteProduct = "DELETE FROM Users WHERE (email = ? AND name = ? AND secret = ?)";
+            const valuesParams = [req.body.email, req.body.name, req.body.secret];
+            console.log("valueparams", valuesParams);
+            //console.debug(valuesParams);
+            const data = await query({query: deleteProduct, values: valuesParams});
+            const result = data.affectedRows;
+            // console.log(data);
+            if (result) {
+                message = "success";
+            } else {
+                message = "error";
+            }
+            // console.log("message", message);
+            const product = {email: req.body.email, name: req.body.name, secret: req.body.secret};
+            res.status(200).json({ message: message, products: product});
+        } catch(err) {
+            console.log(err);
+            res.status(500).json({error: err.message});
+        }
     }
+    // else if (req.method === "PUT") {
+    //     const updateProduct = "UPDATE Users SET secret = ? WHERE (email = ? AND name = name)";
+    //     const valuesParams = [req.body.email, req.body.name, req.body.secret];
+    //     //console.debug(valuesParams);
+    //     const data = await query({query: addProducts, values: valuesParams});
+    //     res.status(200).json({ message: message, products: product });
+    // }
     
 }

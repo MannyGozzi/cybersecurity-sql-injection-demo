@@ -6,14 +6,16 @@ export default function Secret() {
     const[content, setContent] = useState();
     const[created, setCreated] = useState(false);
     const secretRef = useRef();
+    const [deleted, setDeleted] = useState(false);
 
     async function getProducts () {
+        if (status !== "authenticated") return;
         const postData = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
-        }
+        };
         const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata`, postData);
         const json = await res.json();
         if(json && json.products){
@@ -23,7 +25,7 @@ export default function Secret() {
 
     async function addProduct () {
         const secret = secretRef.current.value.trim();
-        if (secret.length < 3 && status !== "authenticated") return;
+        if (secret.length < 3 || status !== "authenticated") return;
         const postData = {
             method: "POST",
             headers: {
@@ -36,7 +38,7 @@ export default function Secret() {
             }),
         };
         const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata`, postData);
-        console.log(res);
+        // console.log(res);
         const json = await res.json();
         if (json.message !== "success") return;
         const newProduct = json.products;
@@ -45,6 +47,29 @@ export default function Secret() {
             {itemid: newProduct.itemid, name: newProduct.name, email: newProduct.email, secret: newProduct.secret},
         ]);
         setCreated(true);
+    }
+
+    async function deleteProduct(name, email, secret) {
+        if (!name || !email || !secret) return;
+        const postData = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                name: name,
+                secret: secret
+            }),
+        };
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata`, postData);
+        const json = await res.json();
+
+        if (json.message !== "success") return;
+        setDeleted(true);
+        console.log(json);
+        console.log(name, email, secret);
+        setContent(content.filter((item) => (item.name !== name || item.email !== email || item.secret !== secret)));
     }
 
     useEffect(()=>{
@@ -70,14 +95,15 @@ export default function Secret() {
                             <h3>{user.name}</h3>
                             <h5>email: {user.email}</h5>
                             <p>secret: {user.secret}</p>
+                            <button type="button" className="button mt-3" onClick={() => {deleteProduct(user.name, user.email, user.secret);}}>Delete</button>
                         </div>
                     })}
                     
                     </div>     
                     <form className='mt-3 w-70 flex flex-col items-start justify-start'>
                         <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3' ref={secretRef} type="text" name="secret" placeholder="New secret..."/>
-                        <button type="button" onClick={() => {addProduct();}}>Add</button>
-                        {created ? <div className='text-green-600'>Success!</div> : null}
+                        <button type="button" className="button" onClick={() => {addProduct();}}>Add</button>
+                        {created ? <strong className='text-green-600 mt-3'>(◠﹏◠) Success!</strong> : null}
                     </form>    
                 </div>           
             </main>
