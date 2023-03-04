@@ -28,9 +28,9 @@ export default function Secret() {
         return ( 
             <main className='items-center'>
                 <h1>Secret Data</h1>
-                <div className='w-1/3'>
+                <div className='w-70'>
                 {content && content.map((user, index) => {
-                    return <div className='p-5 mt-5 border-slate-300 border-2 rounded-lg'>
+                    return <div key={user.email} className='p-5 mt-5 border-slate-300 border-2 rounded-lg'>
                         <h3>{user.name}</h3>
                         <h5>email: {user.email}</h5>
                         <p>secret: {user.secret}</p>

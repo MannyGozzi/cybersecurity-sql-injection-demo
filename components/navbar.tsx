@@ -3,7 +3,7 @@ import { useSession, signOut, getSession, signIn } from "next-auth/react";
 export default function Navbar() {
     const { data: session, status } = useSession();
     
-    console.log(session);
+    // console.log(session);
     if (status === 'authenticated' && session != undefined) {
         
         return (
