@@ -37,7 +37,7 @@ input, textarea {
   margin: 0.5rem 0;
 }
 
-button, .button {
+button, .button, form [type="submit"] {
   background-color: #000000;
   border-radius: .5rem;
   border: none;
