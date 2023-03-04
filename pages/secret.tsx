@@ -6,6 +6,7 @@ export default function Secret() {
     const[content, setContent] = useState();
     const[created, setCreated] = useState(false);
     const secretRef = useRef();
+    const deletedRef = useRef();
     const [deleted, setDeleted] = useState(false);
 
     async function getProducts () {
@@ -16,7 +17,7 @@ export default function Secret() {
                 "Content-Type": "application/json",
             },
         };
-        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata`, postData);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.email}`, postData);
         const json = await res.json();
         if(json && json.products){
             setContent(json.products);
@@ -37,16 +38,20 @@ export default function Secret() {
                 secret: secret
             }),
         };
-        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata`, postData);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.name}`, postData);
         // console.log(res);
         const json = await res.json();
         if (json.message !== "success") return;
         const newProduct = json.products;
+        console.log(newProduct);
+        console.log(session.user.name, session.user.email);
+        if (newProduct.name !== session.user.name || newProduct.email !== session.user.email) return;
         setContent([
             ...content, 
             {itemid: newProduct.itemid, name: newProduct.name, email: newProduct.email, secret: newProduct.secret},
         ]);
         setCreated(true);
+        setDeleted(false);
     }
 
     async function deleteProduct(name, email, secret) {
@@ -67,6 +72,7 @@ export default function Secret() {
 
         if (json.message !== "success") return;
         setDeleted(true);
+        setCreated(false);
         console.log(json);
         console.log(name, email, secret);
         setContent(content.filter((item) => (item.name !== name || item.email !== email || item.secret !== secret)));
@@ -88,13 +94,14 @@ export default function Secret() {
         return ( 
             <main className='items-center text-black'>
                 <h1>Secret Data</h1>
+                
                 <div className='flex flex-row gap-9'>
                     <div className='w-70'>
                     {content && content.map((user, index) => {
                         return <div key={user.itemid} className='p-5 mt-5 border-slate-300 border-2 rounded-lg'>
                             <h3>{user.name}</h3>
-                            <h5>email: {user.email}</h5>
-                            <p>secret: {user.secret}</p>
+                            <h5>{user.email}</h5>
+                            <p>{user.secret}</p>
                             <button type="button" className="button mt-3" onClick={() => {deleteProduct(user.name, user.email, user.secret);}}>Delete</button>
                         </div>
                     })}
@@ -104,6 +111,7 @@ export default function Secret() {
                         <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3' ref={secretRef} type="text" name="secret" placeholder="New secret..."/>
                         <button type="button" className="button" onClick={() => {addProduct();}}>Add</button>
                         {created ? <strong className='text-green-600 mt-3'>(◠﹏◠) Success!</strong> : null}
+                        {deleted ? <strong ref={deletedRef} className='text-red-500 mt-3'>¯\_(ツ)_/¯ Item Deleted!</strong> : null}
                     </form>    
                 </div>           
             </main>
