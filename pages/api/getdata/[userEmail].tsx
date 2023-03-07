@@ -32,6 +32,7 @@ export default async function handler(req, res) {
                 name: req.body.name,
                 email: req.body.email,
                 secret: req.body.secret,
+                itemid: data.insertId,
             };
             res.status(200).json({message: message, products: product});
         } catch(err) {

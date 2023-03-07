@@ -33,7 +33,6 @@ main {
 
 input, textarea { 
   display: block;
-  max-width: 300px;
   margin: 0.5rem 0;
 }
 
@@ -47,7 +46,16 @@ button, .button, form [type="submit"] {
   text-decoration: none;
   display: inline-block;
   cursor: pointer;
+  transition: all 150ms;
+  border: 0.2rem solid transparent;
+
 } 
+
+button:hover, .button:hover, form [type="submit"]:hover {
+  background-color: #EEEEEE;
+  color: black;
+  border-color: #DDDD;
+}
 
 nav a {
   font-weight: bold;

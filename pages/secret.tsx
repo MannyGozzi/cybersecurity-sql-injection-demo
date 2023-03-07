@@ -1,13 +1,15 @@
 import {useState, useEffect, useRef} from 'react'
-import {useSession} from 'next-auth/react'
+import {useSession, getSession} from 'next-auth/react'
+import Link from "next/link"
 
-export default function Secret() {
+export function Secret() {
     const { data: session, status } = useSession()
     const[content, setContent] = useState();
     const[created, setCreated] = useState(false);
     const secretRef = useRef();
     const deletedRef = useRef();
     const [deleted, setDeleted] = useState(false);
+    const [filtered, setFiltered] = useState(false);
 
     async function getProducts () {
         if (status !== "authenticated") return;
@@ -39,11 +41,14 @@ export default function Secret() {
         if(json && json.products){
             setContent(json.products);
         }
+        setFiltered(true);
+        setCreated(false);
+        setDeleted(false);
     }
 
     async function addProduct () {
         const secret = secretRef.current.value.trim();
-        if (secret.length < 3 || status !== "authenticated") return;
+        if (secret.length < 1 || status !== "authenticated") return;
         const postData = {
             method: "POST",
             headers: {
@@ -55,13 +60,13 @@ export default function Secret() {
                 secret: secret
             }),
         };
-        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.name}`, postData);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.email}`, postData);
         // console.log(res);
         const json = await res.json();
         if (json.message !== "success") return;
         const newProduct = json.products;
         console.log(newProduct);
-        console.log(session.user.name, session.user.email);
+        // console.log(session.user.name, session.user.email);
         if (newProduct.name !== session.user.name || newProduct.email !== session.user.email) return;
         setContent([
             ...content, 
@@ -69,6 +74,7 @@ export default function Secret() {
         ]);
         setCreated(true);
         setDeleted(false);
+        setFiltered(false);
     }
 
     async function deleteProduct(name, email, secret) {
@@ -90,6 +96,7 @@ export default function Secret() {
         if (json.message !== "success") return;
         setDeleted(true);
         setCreated(false);
+        setFiltered(false);
         console.log(json);
         console.log(name, email, secret);
         setContent(content.filter((item) => (item.name !== name || item.email !== email || item.secret !== secret)));
@@ -125,16 +132,41 @@ export default function Secret() {
                     
                     </div>     
                     <form className='mt-3 w-96 flex flex-col items-start justify-start'>
-                        <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3 transition-all duration-200 hover:shadow-lg' ref={secretRef} type="text" name="secret" placeholder="Add an item or keyword filter..."/>
+                        <input className='w-full border-slate-300 border-2 rounded-lg p-3 transition-all duration-200 hover:shadow-lg' ref={secretRef} type="text" name="secret" placeholder="Add an item or keyword filter..."/>
                         {deleted ? <strong ref={deletedRef} className='text-red-500 mt-2'>¯\_(ツ)_/¯ Item Deleted!</strong> : null}
                         {created ? <strong className='text-green-600 mt-3'>(◠﹏◠) Success!</strong> : null}
-                        <div className='flex flex-row gap-5 my-6'>
-                            <button type="button" className="button hover:bg-green-500 transition-all duration-100 ease-out" onClick={() => {addProduct();}}>Add</button>
-                            <button type="button" className="button hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getFilteredProducts();}}>Filter</button>
+                        {filtered ? <strong className='text-green-600 mt-3'>(◠﹏◠) Filter Success!</strong> : null}
+                        <div className='w-full flex flex-row gap-5 my-6'>
+                            <button type="button" className="button flex-grow hover:bg-green-500 transition-all duration-100 ease-out" onClick={() => {addProduct();}}>Add</button>
+                            <button type="button" className="button flex-grow hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getFilteredProducts();}}>Filter</button>
+                        </div>
+                        <div className='flex justify-end items-start w-full h-full mt-12'>
+                        <button className='mt-3'>
+                            <Link href="/">← Return to Dashboard</Link>
+                        </button>
                         </div>
                     </form>    
                 </div>           
             </main>
         );
     }
+}
+
+export default Secret;
+
+// forces redirect if we don't have a session
+export const getServerSideProps = async (context) => {
+    const session = await getSession(context);
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
+    
+    return {
+        props: { session },
+    };
 }
