@@ -33,6 +33,7 @@ export default function Secret() {
                 "Content-Type": "application/json",
             },
         };
+        console.log(secret);
         const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.email}/${secret}`, postData);
         const json = await res.json();
         if(json && json.products){
@@ -112,7 +113,7 @@ export default function Secret() {
                 <h1>Secret Data</h1>
                 
                 <div className='flex flex-row gap-9'>
-                    <div className='w-70 '>
+                    <div className='w-96 '>
                     {content && content.map((user, index) => {
                         return <div key={user.itemid} className='p-5 mt-5 border-slate-300 border-2 rounded-lg transition-all duration-200 hover:shadow-lg'>
                             <h3>{user.name}</h3>
@@ -123,8 +124,8 @@ export default function Secret() {
                     })}
                     
                     </div>     
-                    <form className='mt-3 w-70 flex flex-col items-start justify-start'>
-                        <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3 transition-all duration-200 hover:shadow-lg' ref={secretRef} type="text" name="secret" placeholder="Add an item or filter..."/>
+                    <form className='mt-3 w-96 flex flex-col items-start justify-start'>
+                        <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3 transition-all duration-200 hover:shadow-lg' ref={secretRef} type="text" name="secret" placeholder="Add an item or keyword filter..."/>
                         {deleted ? <strong ref={deletedRef} className='text-red-500 mt-2'>¯\_(ツ)_/¯ Item Deleted!</strong> : null}
                         {created ? <strong className='text-green-600 mt-3'>(◠﹏◠) Success!</strong> : null}
                         <div className='flex flex-row gap-5 my-6'>

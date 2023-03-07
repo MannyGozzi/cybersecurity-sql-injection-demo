@@ -5,8 +5,10 @@ export default async function handler(req, res) {
     let message;
     if (req.method === "GET") {
         try {
-            const badQuery = `SELECT * FROM Users WHERE email = "` + userEmail + `" AND secret LIKE "%` + filterWord + `%"`;
-            //console.log(badQuery);
+            // ' OR '1'='1' OR secret LIKE '
+            console.log(filterWord);
+            const badQuery = `SELECT * FROM Users WHERE email = '${userEmail}' AND secret LIKE '%${filterWord}%'`;
+            console.log(badQuery);
             const data = await query({query: badQuery, values: []});
             res.status(200).json({products: data});
         } catch(err) {
