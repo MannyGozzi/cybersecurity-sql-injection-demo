@@ -2,19 +2,19 @@ import { useSession, signOut, getSession, signIn } from "next-auth/react";
 
 export default function Navbar() {
     const { data: session, status } = useSession();
+    //console.log(session);
     
     // console.log(session);
     if (status === 'authenticated' && session != undefined) {
-        
         return (
             <>
-                <div className="bg-slate-900 flex flex-row justify-between px-8 text-white">
+                <div className="bg-slate-100 flex flex-row justify-between px-8 text-slate-900 border-b-slate-300 border-b-4 border-gray-300">
                     <div className="flex flex-col items-start justify-start text-left p-2">
                         <h3 className="h-full">Welcome, {session.user.name} </h3>
                         <small className="h-full">{session.user.email}</small>
                     </div>
                     <div className="flex items-center justify-center">
-                        <button className="mx-3" onClick={() => signOut()}>Sign out</button>
+                        <button className="mx-3 hover:bg-white hover:text-black transition-all duration-150 ease-out border-8 border-transparent hover:border-slate-600" onClick={() => signOut()}>Sign out</button>
                         <img src={session.user.image} alt="User Image" className='rounded-full w-12 h-12'/>
                     </div>
                 </div>

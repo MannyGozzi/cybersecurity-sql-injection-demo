@@ -47,7 +47,7 @@ button, .button, form [type="submit"] {
   text-decoration: none;
   display: inline-block;
   cursor: pointer;
-}
+} 
 
 nav a {
   font-weight: bold;

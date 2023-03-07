@@ -24,6 +24,22 @@ export default function Secret() {
         }
     }
 
+    async function getFilteredProducts () {
+        const secret = secretRef.current.value.trim();
+        if (status !== "authenticated") return;
+        const postData = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.email}/${secret}`, postData);
+        const json = await res.json();
+        if(json && json.products){
+            setContent(json.products);
+        }
+    }
+
     async function addProduct () {
         const secret = secretRef.current.value.trim();
         if (secret.length < 3 || status !== "authenticated") return;
@@ -96,22 +112,25 @@ export default function Secret() {
                 <h1>Secret Data</h1>
                 
                 <div className='flex flex-row gap-9'>
-                    <div className='w-70'>
+                    <div className='w-70 '>
                     {content && content.map((user, index) => {
-                        return <div key={user.itemid} className='p-5 mt-5 border-slate-300 border-2 rounded-lg'>
+                        return <div key={user.itemid} className='p-5 mt-5 border-slate-300 border-2 rounded-lg transition-all duration-200 hover:shadow-lg'>
                             <h3>{user.name}</h3>
                             <h5>{user.email}</h5>
                             <p>{user.secret}</p>
-                            <button type="button" className="button mt-3" onClick={() => {deleteProduct(user.name, user.email, user.secret);}}>Delete</button>
+                            <button type="button" className="button mt-3 hover:bg-red-500 transition-all duration-100 ease-out" onClick={() => {deleteProduct(user.name, user.email, user.secret);}}>Delete</button>
                         </div>
                     })}
                     
                     </div>     
                     <form className='mt-3 w-70 flex flex-col items-start justify-start'>
-                        <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3' ref={secretRef} type="text" name="secret" placeholder="New secret..."/>
-                        <button type="button" className="button" onClick={() => {addProduct();}}>Add</button>
+                        <input className='w-full h-16 border-slate-300 border-2 rounded-lg p-3 transition-all duration-200 hover:shadow-lg' ref={secretRef} type="text" name="secret" placeholder="Add an item or filter..."/>
+                        {deleted ? <strong ref={deletedRef} className='text-red-500 mt-2'>¯\_(ツ)_/¯ Item Deleted!</strong> : null}
                         {created ? <strong className='text-green-600 mt-3'>(◠﹏◠) Success!</strong> : null}
-                        {deleted ? <strong ref={deletedRef} className='text-red-500 mt-3'>¯\_(ツ)_/¯ Item Deleted!</strong> : null}
+                        <div className='flex flex-row gap-5 my-6'>
+                            <button type="button" className="button hover:bg-green-500 transition-all duration-100 ease-out" onClick={() => {addProduct();}}>Add</button>
+                            <button type="button" className="button hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getFilteredProducts();}}>Filter</button>
+                        </div>
                     </form>    
                 </div>           
             </main>
