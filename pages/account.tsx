@@ -16,9 +16,11 @@ const account = () => {
                 </ul>
                 </div>
                 <div className=" justify-center flex items-center">
-                <button className='mt-3'>
-                    <Link href="/">← Return to Dashboard</Link>
-                </button>
+                <Link href="/">
+                    <button className='mt-3'>
+                    ← Return to Dashboard
+                    </button>
+                </Link>
                 </div>
             </div>
         );

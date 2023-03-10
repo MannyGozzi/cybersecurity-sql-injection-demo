@@ -9,12 +9,16 @@ export default function Component() {
         <h1 className="mt-7">Welcome</h1>
         <p className="mt-3">What can we do for you?</p>
         <div className='w-48 '>
-        <button className='mt-5 w-full p-3'>
-          <Link href="/account">Account</Link>
-        </button>
-        <button className='mt-5 w-full p-3'>
-          <Link href="/secret">Secret</Link>
-        </button>
+        <Link href="/account">
+            <button className='mt-5 w-full p-3'>
+            Account
+            </button>
+        </Link>
+        <Link href="/secret">
+            <button className='mt-5 w-full p-3'>
+            Secret
+            </button>
+        </Link>
         </div>
       </div>
   }

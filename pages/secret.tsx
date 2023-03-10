@@ -167,12 +167,14 @@ export function Secret() {
                         <div className='w-full grid grid-cols-3 gap-3 my-6'>
                             <button type="button" className="button hover:bg-green-500 transition-all duration-100 ease-out" onClick={() => {addProduct();}}>Add</button>
                             <button type="button" className="button hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getFilteredProducts();}}>Filter</button>
-                            <button type="button" className="button hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getSafeFilteredProducts();}}>Filter Safe</button>
+                            <button type="button" className="button hover:bg-blue-400 transition-all duration-100 ease-out" onClick={() => {getSafeFilteredProducts();}}>Filter Safe</button>
                         </div>
                         <div className='flex justify-end items-start w-full h-full mt-12'>
-                        <button className='mt-3'>
-                            <Link href="/">← Return to Dashboard</Link>
-                        </button>
+                        <Link href="/">
+                            <button className='mt-3'>
+                            ← Return to Dashboard
+                            </button>
+                        </Link>
                         </div>
                     </form>    
                 </div>           
