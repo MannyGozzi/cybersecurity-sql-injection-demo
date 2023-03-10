@@ -41,7 +41,7 @@ button, .button, form [type="submit"] {
   border-radius: .5rem;
   border: none;
   color: white;
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
   text-align: center;
   text-decoration: none;
   display: inline-block;

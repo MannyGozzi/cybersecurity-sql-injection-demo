@@ -10,6 +10,7 @@ export function Secret() {
     const deletedRef = useRef();
     const [deleted, setDeleted] = useState(false);
     const [filtered, setFiltered] = useState(false);
+    const [safelyFiltered, setSafelyFiltered] = useState(false);
 
     async function getProducts () {
         if (status !== "authenticated") return;
@@ -35,7 +36,7 @@ export function Secret() {
                 "Content-Type": "application/json",
             },
         };
-        console.log(secret);
+        //console.log(secret);
         const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.email}/${secret}`, postData);
         const json = await res.json();
         if(json && json.products){
@@ -44,6 +45,28 @@ export function Secret() {
         setFiltered(true);
         setCreated(false);
         setDeleted(false);
+        setSafelyFiltered(false);
+    }
+
+    async function getSafeFilteredProducts () {
+        const secret = secretRef.current.value.trim();
+        if (status !== "authenticated") return;
+        const postData = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        //(secret);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getdata/${session.user.email}/safe/${secret}`, postData);
+        const json = await res.json();
+        if(json && json.products){
+            setContent(json.products);
+        }
+        setFiltered(false);
+        setCreated(false);
+        setDeleted(false);
+        setSafelyFiltered(true);
     }
 
     async function addProduct () {
@@ -65,7 +88,7 @@ export function Secret() {
         const json = await res.json();
         if (json.message !== "success") return;
         const newProduct = json.products;
-        console.log(newProduct);
+        //console.log(newProduct);
         // console.log(session.user.name, session.user.email);
         if (newProduct.name !== session.user.name || newProduct.email !== session.user.email) return;
         setContent([
@@ -75,6 +98,7 @@ export function Secret() {
         setCreated(true);
         setDeleted(false);
         setFiltered(false);
+        setSafelyFiltered(false);
     }
 
     async function deleteProduct(name, email, secret) {
@@ -97,8 +121,9 @@ export function Secret() {
         setDeleted(true);
         setCreated(false);
         setFiltered(false);
-        console.log(json);
-        console.log(name, email, secret);
+        setSafelyFiltered(false);
+        //console.log(json);
+        //console.log(name, email, secret);
         setContent(content.filter((item) => (item.name !== name || item.email !== email || item.secret !== secret)));
     }
 
@@ -126,8 +151,10 @@ export function Secret() {
                             <h3>{user.name}</h3>
                             <h5>{user.email}</h5>
                             <p>{user.secret}</p>
-                            <button type="button" className="button mt-3 hover:bg-red-500 transition-all duration-100 ease-out" onClick={() => {deleteProduct(user.name, user.email, user.secret);}}>Delete</button>
-                        </div>
+                            <div className='flex justify-end'>
+                                <button type="button" className="button mt-3 hover:bg-red-500 transition-all duration-100 ease-out" onClick={() => {deleteProduct(session.user.name, session.user.email, user.secret);}}>Delete</button>
+                            </div>
+                            </div>
                     })}
                     
                     </div>     
@@ -136,9 +163,11 @@ export function Secret() {
                         {deleted ? <strong ref={deletedRef} className='text-red-500 mt-2'>¯\_(ツ)_/¯ Item Deleted!</strong> : null}
                         {created ? <strong className='text-green-600 mt-3'>(◠﹏◠) Success!</strong> : null}
                         {filtered ? <strong className='text-green-600 mt-3'>(◠﹏◠) Filter Success!</strong> : null}
-                        <div className='w-full flex flex-row gap-5 my-6'>
-                            <button type="button" className="button flex-grow hover:bg-green-500 transition-all duration-100 ease-out" onClick={() => {addProduct();}}>Add</button>
-                            <button type="button" className="button flex-grow hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getFilteredProducts();}}>Filter</button>
+                        {safelyFiltered ? <strong className='text-green-600 mt-3'>(◠﹏◠) Safe Filter Success!</strong> : null}
+                        <div className='w-full grid grid-cols-3 gap-3 my-6'>
+                            <button type="button" className="button hover:bg-green-500 transition-all duration-100 ease-out" onClick={() => {addProduct();}}>Add</button>
+                            <button type="button" className="button hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getFilteredProducts();}}>Filter</button>
+                            <button type="button" className="button hover:bg-orange-400 transition-all duration-100 ease-out" onClick={() => {getSafeFilteredProducts();}}>Filter Safe</button>
                         </div>
                         <div className='flex justify-end items-start w-full h-full mt-12'>
                         <button className='mt-3'>

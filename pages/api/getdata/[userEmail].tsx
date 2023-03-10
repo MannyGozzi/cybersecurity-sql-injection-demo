@@ -43,7 +43,7 @@ export default async function handler(req, res) {
         try {
             const deleteProduct = "DELETE FROM Users WHERE (email = ? AND name = ? AND secret = ?)";
             const valuesParams = [req.body.email, req.body.name, req.body.secret];
-            console.log("valueparams", valuesParams);
+            //console.log("valueparams", valuesParams);
             //console.debug(valuesParams);
             const data = await query({query: deleteProduct, values: valuesParams});
             const result = data.affectedRows;
