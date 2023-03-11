@@ -5,11 +5,8 @@ export default async function handler(req, res) {
     let message;
     if (req.method === "GET") {
         try {
-            // attack
-            // ' OR '1'='1' OR secret LIKE '
-            //console.log(filterWord);
+            // ' OR '1'='1' OR secret LIKE ' attack no longer works
             const safeQuery = `SELECT * FROM Users WHERE email = ? AND secret LIKE CONCAT('%', ?, '%')`;
-            //console.log(badQuery);
             const data = await query({query: safeQuery, values: [userEmail, filterWord]});
             res.status(200).json({products: data});
         } catch(err) {

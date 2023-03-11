@@ -156,6 +156,7 @@ export function Secret() {
                             </div>
                             </div>
                     })}
+                    {!content || Object.keys(content).length == 0  ? <h1>No items...</h1> : null}
                     
                     </div>     
                     <form className='mt-3 w-96 flex flex-col items-start justify-start'>
