@@ -2,6 +2,23 @@
 
 This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.2)](https://tailwindcss.com/blog/tailwindcss-v3-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
 
+## Setup
+Cloning directly from this respository will not immediately work. First you must define a .env file that contains the following information for google OAuth, the hosting server URL, a JWT Secret, and Database Info:
+```
+GOOGLE_ID=
+GOOGLE_SECRET=
+NEXT_PUBLIC_URL="http://localhost:3000"
+
+DB_HOST="localhost"
+DB=
+DB_USER=
+DB_PASSWORD=
+DB_SOCKET_PATH=
+DB_PORT=
+
+JWT_SECRET=
+```
+
 ## Deploy your own
 
 Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
